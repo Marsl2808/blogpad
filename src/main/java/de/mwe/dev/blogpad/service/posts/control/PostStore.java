@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+
+
 public class PostStore {
 
     public void writeToFs(String filename, String content) throws IOException{
@@ -14,9 +16,14 @@ public class PostStore {
         Files.writeString(path, content);
     }
 
-    public String read(String filename) throws IOException{
+    public Post readFromFs(String filename) throws IOException{
         Path path = Path.of(filename);
-        return Files.readString(path);
+        return deserialize(Files.readString(path));
+    }
+
+    public Post deserialize(String stringifiedPost){
+        Jsonb jsonb = JsonbBuilder.create();
+        return jsonb.fromJson(stringifiedPost, Post.class);
     }
 
     public String serialize(Post post){

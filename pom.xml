@@ -57,7 +57,30 @@
             <artifactId>yasson</artifactId>
             <version>1.0.7</version>3.0.2
             <scope>test</scope>
-        </dependency>  -->
+        </dependency> 
+
+        <dependency>
+            <groupId>javax.json.bind</groupId>
+            <artifactId>javax.json.bind-api</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency> 
+        
+                <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
 
     </dependencies>
 
