@@ -5,10 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import de.mwe.dev.blogpad.service.posts.entity.Post;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
-
+@ApplicationScoped
 public class PostStore {
 
     public void writeToFs(String filename, String content) throws IOException{
