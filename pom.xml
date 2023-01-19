@@ -20,68 +20,46 @@
 
         <!-- Version def-->
         <maven.surefire.version>2.22.2</maven.surefire.version>
+        <jakartaee-api.version>9.1.0</jakartaee-api.version>
+        <microprofile.version>5.0</microprofile.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <yasson.version>2.0.2</yasson.version>
     </properties>
 
     <dependencies>
-        <!-- Provided dependencies -->
+
+        <!-- Provided Dependencies -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0</version>
+            <version>${jakartaee-api.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>5.0</version>
+            <version>${microprofile.version}</version>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
-        <!-- For testing
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <scope>test</scope>
-        </dependency> -->
+        <!-- End Provided Dependencies -->
+
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.eclipse/yasson
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>yasson</artifactId>
-            <version>1.0.7</version>3.0.2
-            <scope>test</scope>
-        </dependency> 
-
-        <dependency>
-            <groupId>javax.json.bind</groupId>
-            <artifactId>javax.json.bind-api</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency> 
-        
-                <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.1</version>
-            <scope>test</scope>
-        </dependency>-->
 
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>2.0.2</version>
+            <version>${yasson.version}</version>
             <scope>test</scope>
         </dependency>
-
-
-
+        <!-- End Test Dependencies -->
     </dependencies>
 
     <build>
