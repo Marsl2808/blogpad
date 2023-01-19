@@ -1,7 +1,6 @@
 package de.mwe.dev.blogpad.service.posts.control;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
@@ -17,42 +16,29 @@ import de.mwe.dev.blogpad.service.posts.entity.Post;
 public class PostStoreTest {
 
     PostStore cut;
-    String path = "target/firstPost";
+    Post postRef;
+    private String contentRoot = "D:/tmp/";
 
     @BeforeEach
     public void init() {
         this.cut = new PostStore();
+        this.postRef = new Post("testPost", "testContent");
     }
 
     @Test
     @Order(1)
     public void serializePostTest() {
-        try {
-            // serialize
-            Post postRef = new Post("hello", "world");
-            String postRefString = this.cut.serialize(postRef);
-            System.out.println(postRefString);
-            assertNotNull(postRefString);
-
-            // write to fs
-            cut.writeToFs(path, postRefString);
-
-            Post postAct = cut.readFromFs(path);
-            String postActString = this.cut.serialize(postAct);
-            System.out.println(postActString);
-            assertEquals(postRefString, postActString);
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        this.cut.save(this.postRef, this.contentRoot +  this.postRef.getTitle());
     }
 
     @Test
     @Order(2)
     public void deserializePostTest() throws IOException{
-        // Post postFromFs = cut.readFromFs(path);
-        // System.out.println(this.contentRef);
-        // System.out.println(postFromFs.getContent());
-        // assertEquals(this.contentRef, postFromFs.getContent());
+        Post postAct = cut.read(this.contentRoot + postRef.getTitle());
+
+        String postActString = this.cut.serialize(postAct);
+        String postRefString = this.cut.serialize(this.postRef);
+        System.out.println(postActString);
+        assertEquals(postRefString, postActString);
     }
 }

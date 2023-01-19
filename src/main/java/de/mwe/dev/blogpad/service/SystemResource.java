@@ -1,7 +1,5 @@
 package de.mwe.dev.blogpad.service;
 
-import java.io.IOException;
-
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
@@ -28,15 +26,6 @@ public class SystemResource {
              = "Number of times the endpoint is requested")
     public Response getProperties() {
         String jsonMsg = postStore.serialize(new Post("hello", "duke"));
-        
-        // String filename="firstPost";
-        // String absPath = Paths.get(filename).toAbsolutePath().toString();
-        // System.out.println(absPath);
-        try {
-            postStore.writeToFs("D:/DEV/java/openliberty/blogpad/target/firstPost", jsonMsg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return Response.ok(jsonMsg).build();
     }
 }

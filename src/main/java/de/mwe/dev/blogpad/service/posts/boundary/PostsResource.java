@@ -1,6 +1,6 @@
 package de.mwe.dev.blogpad.service.posts.boundary;
 
-import java.io.IOException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import de.mwe.dev.blogpad.service.posts.control.PostStore;
 import de.mwe.dev.blogpad.service.posts.entity.Post;
@@ -16,15 +16,13 @@ public class PostsResource {
     @Inject
     PostStore postStore;
 
+    @Inject
+    @ConfigProperty(name = "content-root")
+    private String contentRoot;// = "D:/tmp/";
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void save(Post post){
-        String serializedPost = postStore.serialize(post);
-        try {
-            // TODO: add project root cfg property
-            postStore.writeToFs("D:/tmp" + post.getTitle(), serializedPost);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        postStore.save(post, contentRoot + post.getTitle());
     }
 }
