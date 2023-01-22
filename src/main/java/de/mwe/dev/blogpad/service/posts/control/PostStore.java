@@ -2,6 +2,7 @@ package de.mwe.dev.blogpad.service.posts.control;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import de.mwe.dev.blogpad.service.posts.entity.Post;
@@ -13,22 +14,17 @@ import jakarta.json.bind.JsonbBuilder;
 @ApplicationScoped
 public class PostStore {
 
-    // TODO
-    //@Inject
-    //@ConfigProperty(name = "content-root")
-    //private String contentRoot = "D:/tmp/";
-
     public void save(Post post, String filename){
         String jsonPost = serialize(post);
         writeToFs(filename, jsonPost);
     }
 
     public void writeToFs(String filename, String content) {
-        Path path = Path.of(filename);
         try{
+            Path path = Path.of(filename);
             Files.writeString(path, content);
-        } catch(IOException e){
-            e.printStackTrace();
+        } catch(IOException | InvalidPathException e){
+            throw new StorageException("cannot save post", e);
         }
     }
 
@@ -43,12 +39,12 @@ public class PostStore {
     }
 
     public String readFromFs(String filename){
-        Path path = Path.of(filename);
         String stringifiedPost = "";
         try {
+            Path path = Path.of(filename);
             stringifiedPost = Files.readString(path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException| InvalidPathException e) {
+            throw new StorageException("cannot read post", e);
         }
         return stringifiedPost;
     }
