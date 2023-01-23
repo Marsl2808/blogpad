@@ -32,12 +32,26 @@ public class PostStore {
     @Inject
     TitleNormalizer normalizer;
 
-    public Post save(Post post, String filename){
+    public Post create(Post post, String filename){
+        String jsonPost = serialize(post);
+        String normalizedFilename = this.normalizer.normalizeFilename(filename);
+        if(fileExists(normalizedFilename))
+            throw new StorageException("file "+ normalizedFilename + " already exists");
+        post.setFullQualifiedFilename(normalizedFilename);
+        writeToFs(normalizedFilename, jsonPost);
+        return post;
+    }
+
+    private boolean fileExists(String filename){
+        Path fqn = this.storageDirectoryPath.resolve(filename);
+        return Files.exists(fqn);
+    }
+
+    public void update(Post post, String filename){
         String jsonPost = serialize(post);
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
         post.setFullQualifiedFilename(normalizedFilename);
         writeToFs(normalizedFilename, jsonPost);
-        return post;
     }
 
     public void writeToFs(String filename, String content) {

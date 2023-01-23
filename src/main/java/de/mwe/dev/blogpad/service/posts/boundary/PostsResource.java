@@ -11,6 +11,7 @@ import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -26,14 +27,23 @@ public class PostsResource {
     @Inject
     PostStore postStore;
 
+    @POST
+    @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
+    @Counted(absolute = true, description = "Number of times the endpoint is requested")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(@Context UriInfo uriInfo, Post post){
+        Post savedPost = postStore.create(post, post.getTitle());
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();//URI.create(savedPost.getFullQualifiedFilename());
+        return Response.created(uri).build();
+    }
+
     @PUT
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response save(@Context UriInfo uriInfo, Post post){
-        Post savedPost = postStore.save(post, post.getTitle());
-        URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();//URI.create(savedPost.getFullQualifiedFilename());
-        return Response.created(uri).build();
+    public Response update(@Context UriInfo uriInfo, Post post){
+        postStore.update(post, post.getTitle());
+        return Response.ok().build();
     }
 
     @GET

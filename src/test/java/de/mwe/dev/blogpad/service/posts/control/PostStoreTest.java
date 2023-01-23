@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -19,18 +19,18 @@ import jakarta.inject.Inject;
 @TestMethodOrder(OrderAnnotation.class)
 public class PostStoreTest {
 
-    PostStore cut;
-    Post postRef;
-    private String contentRoot = "D:/tmp/";
+    static PostStore cut;
+    static Post postRef;
+    static String contentRoot = "D:/tmp/";
 
-    @BeforeEach
-    public void init() {
-        this.cut = new PostStore();
-        this.postRef = new Post("testPost", "testContent");
+    @BeforeAll
+    public static void init() {
+        cut = new PostStore();
+        postRef = new Post("testPost", "testContent");
         initFields();
     }
 
-    private void initFields() {
+    private static void initFields() {
         // set injected values of poststore by reflection
         Class<?> clazz = cut.getClass();
         Field[] fields = clazz.getDeclaredFields();
@@ -46,12 +46,12 @@ public class PostStoreTest {
                     System.out.println("Reflection failed");
                     e.printStackTrace();
                 }
-                System.out.println("test");
             }else if(field.getAnnotation(Inject.class) != null){
                     try {
+                        field.setAccessible(true);
                         field.set(cut, new TitleNormalizer());
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        System.out.println("Reflection error");
+                        System.out.println("Reflection failed");
                         e.printStackTrace();
                 }
             }
@@ -60,17 +60,17 @@ public class PostStoreTest {
 
     @Test
     @Order(1)
-    public void serializePostTest() {
-        this.cut.save(this.postRef, this.postRef.getTitle());
+    public static void createPostTest() {
+        cut.create(postRef, postRef.getTitle());
     }
 
     @Test
     @Order(2)
-    public void deserializePostTest() throws IOException{
-        Post postAct = cut.read(this.contentRoot + postRef.getTitle());
+    public static void readPostTest() throws IOException{
+        Post postAct = cut.read(contentRoot + postRef.getTitle());
 
-        String postActString = this.cut.serialize(postAct);
-        String postRefString = this.cut.serialize(this.postRef);
+        String postActString = cut.serialize(postAct);
+        String postRefString = cut.serialize(postRef);
         System.out.println(postActString);
         assertEquals(postRefString, postActString);
     }
