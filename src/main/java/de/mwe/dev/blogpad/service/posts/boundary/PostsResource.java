@@ -1,6 +1,7 @@
 package de.mwe.dev.blogpad.service.posts.boundary;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.net.URI;
+
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
@@ -14,14 +15,13 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 @Path("posts")
 public class PostsResource {
-
-    @Inject
-    @ConfigProperty(name = "content-root")
-    private String contentRoot;
 
     @Inject
     PostStore postStore;
@@ -30,8 +30,10 @@ public class PostsResource {
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void save(Post post){
-        postStore.save(post, post.getTitle(), contentRoot);
+    public Response save(@Context UriInfo uriInfo, Post post){
+        Post savedPost = postStore.save(post, post.getTitle());
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();//URI.create(savedPost.getFullQualifiedFilename());
+        return Response.created(uri).build();
     }
 
     @GET
@@ -39,6 +41,6 @@ public class PostsResource {
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @Produces(MediaType.APPLICATION_JSON)
     public Post findPost(@QueryParam("title") String title){
-        return postStore.read(contentRoot + title);
+        return postStore.read(title);
     }
 }

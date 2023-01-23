@@ -3,6 +3,7 @@ package de.mwe.dev.blogpad.service.posts.entity;
 
 public class Post {
 
+    private String fullQualifiedFilename;
     private String title;
     private String content;
 
@@ -20,6 +21,14 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setFullQualifiedFilename(String filename) {
+        this.fullQualifiedFilename = filename;
+    }
+
+    public String getFullQualifiedFilename() {
+        return fullQualifiedFilename;
     }
 
     public String getTitle() {
