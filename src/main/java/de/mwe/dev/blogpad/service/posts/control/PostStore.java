@@ -14,9 +14,10 @@ import jakarta.json.bind.JsonbBuilder;
 @ApplicationScoped
 public class PostStore {
 
-    public void save(Post post, String filename){
+    public void save(Post post, String filename, String contentRoot){
         String jsonPost = serialize(post);
-        writeToFs(filename, jsonPost);
+        String fullQualifiedFilename = contentRoot + normalizeFilename(filename);
+        writeToFs(fullQualifiedFilename, jsonPost);
     }
 
     public void writeToFs(String filename, String content) {
@@ -25,6 +26,21 @@ public class PostStore {
             Files.writeString(path, content);
         } catch(IOException | InvalidPathException e){
             throw new StorageException("cannot save post", e);
+        }
+    }
+
+    String normalizeFilename(String filename){
+        return filename.codePoints()
+            .map(this::replaceWithDigitOrLetter)
+            .collect(StringBuffer::new, StringBuffer::appendCodePoint, StringBuffer::append)
+            .toString();
+    }
+
+    int replaceWithDigitOrLetter(int codePoint){
+        if(Character.isLetterOrDigit(codePoint)){
+            return codePoint;
+        }else{
+            return "-".codePoints().findFirst().orElseThrow();
         }
     }
 

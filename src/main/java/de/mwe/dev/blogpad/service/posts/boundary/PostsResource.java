@@ -31,7 +31,7 @@ public class PostsResource {
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @Consumes(MediaType.APPLICATION_JSON)
     public void save(Post post){
-        postStore.save(post, contentRoot + post.getTitle());
+        postStore.save(post, post.getTitle(), contentRoot);
     }
 
     @GET
