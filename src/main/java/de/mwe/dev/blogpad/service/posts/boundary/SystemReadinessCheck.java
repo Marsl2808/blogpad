@@ -1,4 +1,4 @@
-package de.mwe.dev.blogpad.service;
+package de.mwe.dev.blogpad.service.posts.boundary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -14,11 +14,11 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 @ApplicationScoped
 public class SystemReadinessCheck implements HealthCheck {
 
-    private static final String READINESS_CHECK = SystemResource.class.getSimpleName()
+    private static final String READINESS_CHECK = PostsResource.class.getSimpleName()
                                                  + " Readiness Check";
 
     @Inject
-    @ConfigProperty(name = "io_openliberty_guides_system_inMaintenance")
+    @ConfigProperty(name = "system.inMaintenance")
     Provider<String> inMaintenance;
 
     @Override

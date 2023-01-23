@@ -33,6 +33,7 @@ public class PostStore {
     TitleNormalizer normalizer;
 
     public Post create(Post post, String filename){
+        post.setCreatedAt();
         String jsonPost = serialize(post);
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
         if(fileExists(normalizedFilename))
@@ -42,12 +43,13 @@ public class PostStore {
         return post;
     }
 
-    private boolean fileExists(String filename){
+    public boolean fileExists(String filename){
         Path fqn = this.storageDirectoryPath.resolve(filename);
         return Files.exists(fqn);
     }
 
     public void update(Post post, String filename){
+        post.setModifiedAt();
         String jsonPost = serialize(post);
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
         post.setFullQualifiedFilename(normalizedFilename);
@@ -76,7 +78,7 @@ public class PostStore {
     public String readFromFs(String filename){
         String stringifiedPost = "";
         try {
-            Path path = this.storageDirectoryPath.resolve(filename);//Path.of(filename);
+            Path path = this.storageDirectoryPath.resolve(filename);
             stringifiedPost = Files.readString(path);
         } catch (IOException| InvalidPathException e) {
             throw new StorageException("cannot read post", e);

@@ -1,4 +1,4 @@
-package de.mwe.dev.blogpad.service;
+package de.mwe.dev.blogpad.service.posts.boundary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -20,7 +20,7 @@ public class SystemLivenessCheck implements HealthCheck {
         long memMax = memBean.getHeapMemoryUsage().getMax();
 
         return HealthCheckResponse.named(
-            SystemResource.class.getSimpleName() + " Liveness Check")
+            PostsResource.class.getSimpleName() + " Liveness Check")
                                   .status(memUsed < memMax * 0.9).build();
     }
 
