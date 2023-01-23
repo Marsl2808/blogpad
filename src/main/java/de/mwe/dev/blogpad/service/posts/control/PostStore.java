@@ -7,6 +7,7 @@ import java.nio.file.Path;
 
 import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
@@ -14,9 +15,12 @@ import jakarta.json.bind.JsonbBuilder;
 @ApplicationScoped
 public class PostStore {
 
+    @Inject
+    TitleNormalizer normalizer;
+
     public void save(Post post, String filename, String contentRoot){
         String jsonPost = serialize(post);
-        String fullQualifiedFilename = contentRoot + normalizeFilename(filename);
+        String fullQualifiedFilename = contentRoot + this.normalizer.normalizeFilename(filename);
         writeToFs(fullQualifiedFilename, jsonPost);
     }
 
@@ -26,21 +30,6 @@ public class PostStore {
             Files.writeString(path, content);
         } catch(IOException | InvalidPathException e){
             throw new StorageException("cannot save post", e);
-        }
-    }
-
-    String normalizeFilename(String filename){
-        return filename.codePoints()
-            .map(this::replaceWithDigitOrLetter)
-            .collect(StringBuffer::new, StringBuffer::appendCodePoint, StringBuffer::append)
-            .toString();
-    }
-
-    int replaceWithDigitOrLetter(int codePoint){
-        if(Character.isLetterOrDigit(codePoint)){
-            return codePoint;
-        }else{
-            return "-".codePoints().findFirst().orElseThrow();
         }
     }
 
