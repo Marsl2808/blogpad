@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +32,11 @@ public class PostStoreTest {
         cut = new PostStore();
         postRef = new Post("testPost", "testContent");
         initFields();
+    }
+
+    private void cleanDirectory() throws IOException{
+        Path path = Path.of(contentRoot).resolve(postRef.getTitle());
+        Files.deleteIfExists(path);
     }
 
     private void initFields() {
@@ -62,13 +69,21 @@ public class PostStoreTest {
 
     @Test
     @Order(1)
+    public void createPostTest() throws IOException {
+        cleanDirectory();
+        cut.create(postRef, postRef.getTitle());
+        assertTrue(cut.fileExists(contentRoot + postRef.getTitle()));
+    }
+
+    @Test
+    @Order(2)
     public void updatePostTest() {
         cut.update(postRef, postRef.getTitle());
         assertTrue(cut.fileExists(contentRoot + postRef.getTitle()));
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     public void readPostTest() throws IOException{
         Post postAct = cut.read(contentRoot + postRef.getTitle());
         postAct.setModifiedAt(postRef.getModifiedAt());

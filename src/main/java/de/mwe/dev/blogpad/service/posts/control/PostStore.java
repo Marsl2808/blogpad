@@ -6,6 +6,8 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
 
 import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.annotation.PostConstruct;
@@ -32,6 +34,15 @@ public class PostStore {
     @Inject
     TitleNormalizer normalizer;
 
+    @Gauge(name = "post-storage", unit = MetricUnits.MEGABYTES)
+    public long getPostStorageInMB(){
+        try{
+            return Files.getFileStore(this.storageDirectoryPath).getUsableSpace() / 1024 / 1024;
+        }catch(IOException e){
+            throw new StorageException("Cannot fetch size information from " + this.storageDirectoryPath, e);
+        }
+    }
+
     public Post create(Post post, String filename){
         post.setCreatedAt();
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
@@ -51,9 +62,9 @@ public class PostStore {
 
     public void update(Post post, String filename){
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
-        // if(!fileExists(normalizedFilename)){
-        //     throw new StorageException("file "+ normalizedFilename + " not exists. Use POST to create.");
-        // }
+        if(!fileExists(normalizedFilename)){
+            throw new StorageException("file "+ normalizedFilename + " not exists. Use POST to create.");
+        }
         post.setModifiedAt();
         String jsonPost = serialize(post);
         post.setFullQualifiedFilename(normalizedFilename);

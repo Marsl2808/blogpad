@@ -28,5 +28,4 @@ public class SystemReadinessCheck implements HealthCheck {
         }
         return HealthCheckResponse.up(READINESS_CHECK);
     }
-
 }

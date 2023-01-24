@@ -2,6 +2,7 @@ package de.mwe.dev.blogpad.service.posts.entity;
 
 import java.time.LocalDateTime;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class Post {
@@ -9,15 +10,15 @@ public class Post {
     @Schema(readOnly = true)
     public String fullQualifiedFilename;
 
-    @Schema(required = true)
+    @Schema(required = true, example = "exampleTitle")
     public String title;
 
-    @Schema(required = true)
+    @Schema(required = true, example = "how to use ...")
     public String content;
 
-    @Schema(readOnly = true)
+    @Schema(readOnly = true, type = SchemaType.STRING, format = "date-time")
     public LocalDateTime createdAt;
-    @Schema(readOnly = true)
+    @Schema(readOnly = true, type = SchemaType.STRING, format = "date-time")
     public LocalDateTime modifiedAt;
 
     public Post(String title, String content){

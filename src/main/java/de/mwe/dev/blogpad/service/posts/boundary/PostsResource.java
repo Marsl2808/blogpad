@@ -32,6 +32,7 @@ public class PostsResource {
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @APIResponse( responseCode = "400", description = "Post with same title already exists. Use PUT for updates.")
+    @APIResponse( responseCode = "201", description = "Post created.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(@Context UriInfo uriInfo, Post post){
@@ -44,6 +45,7 @@ public class PostsResource {
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @APIResponse( responseCode = "400", description = "Post not exists. Use POST to create.")
+    @APIResponse( responseCode = "201", description = "Update successful.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context UriInfo uriInfo, Post post){
