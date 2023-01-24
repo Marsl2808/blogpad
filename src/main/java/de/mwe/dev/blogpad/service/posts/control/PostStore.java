@@ -19,7 +19,7 @@ import jakarta.json.bind.JsonbBuilder;
 public class PostStore {
 
     @Inject
-    @ConfigProperty(name = "content-root")
+    @ConfigProperty(name = "content.root")
     private String contentRoot;
 
     Path storageDirectoryPath;
@@ -34,10 +34,11 @@ public class PostStore {
 
     public Post create(Post post, String filename){
         post.setCreatedAt();
-        String jsonPost = serialize(post);
         String normalizedFilename = this.normalizer.normalizeFilename(filename);
-        if(fileExists(normalizedFilename))
-            throw new StorageException("file "+ normalizedFilename + " already exists");
+        if(fileExists(normalizedFilename)){
+            throw new StorageException("file "+ normalizedFilename + " already exists. Use PUT for update.");
+        }
+        String jsonPost = serialize(post);
         post.setFullQualifiedFilename(normalizedFilename);
         writeToFs(normalizedFilename, jsonPost);
         return post;
@@ -49,9 +50,12 @@ public class PostStore {
     }
 
     public void update(Post post, String filename){
+        String normalizedFilename = this.normalizer.normalizeFilename(filename);
+        // if(!fileExists(normalizedFilename)){
+        //     throw new StorageException("file "+ normalizedFilename + " not exists. Use POST to create.");
+        // }
         post.setModifiedAt();
         String jsonPost = serialize(post);
-        String normalizedFilename = this.normalizer.normalizeFilename(filename);
         post.setFullQualifiedFilename(normalizedFilename);
         writeToFs(normalizedFilename, jsonPost);
     }

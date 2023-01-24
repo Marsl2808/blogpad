@@ -22,12 +22,13 @@ public class PostStoreTest {
 
     PostStore cut;
     Post postRef;
+    // TODO: write to target folder
     String contentRoot = "D:/tmp/";
 
     @BeforeEach
     public void init() {
         cut = new PostStore();
-        postRef = new Post("testPost", "testContent", "fqn");
+        postRef = new Post("testPost", "testContent");
         initFields();
     }
 

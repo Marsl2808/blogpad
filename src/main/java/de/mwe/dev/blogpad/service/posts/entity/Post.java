@@ -2,19 +2,27 @@ package de.mwe.dev.blogpad.service.posts.entity;
 
 import java.time.LocalDateTime;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 public class Post {
 
+    @Schema(readOnly = true)
     public String fullQualifiedFilename;
+
+    @Schema(required = true)
     public String title;
+
+    @Schema(required = true)
     public String content;
 
+    @Schema(readOnly = true)
     public LocalDateTime createdAt;
+    @Schema(readOnly = true)
     public LocalDateTime modifiedAt;
 
-    public Post(String title, String content, String fqn){
+    public Post(String title, String content){
         this.title = title;
         this.content = content;
-        this.fullQualifiedFilename = fqn;
     }
 
     public Post(){

@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import de.mwe.dev.blogpad.service.posts.control.PostStore;
 import de.mwe.dev.blogpad.service.posts.entity.Post;
@@ -30,17 +31,21 @@ public class PostsResource {
     @POST
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
+    @APIResponse( responseCode = "400", description = "Post with same title already exists. Use PUT for updates.")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response create(@Context UriInfo uriInfo, Post post){
         Post savedPost = postStore.create(post, post.getTitle());
-        URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();//URI.create(savedPost.getFullQualifiedFilename());
+        URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();
         return Response.created(uri).build();
     }
 
     @PUT
     @Timed(name = "getPropertiesTime", description = "Time needed to get the response")
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
+    @APIResponse( responseCode = "400", description = "Post not exists. Use POST to create.")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context UriInfo uriInfo, Post post){
         postStore.update(post, post.getTitle());
         return Response.ok().build();
