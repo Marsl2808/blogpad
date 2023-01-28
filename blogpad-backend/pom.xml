@@ -4,9 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.mwe.dev</groupId>
-    <artifactId>blogpad</artifactId>
+    <artifactId>blogpad-backend</artifactId>
     <packaging>war</packaging>
     <version>1.0.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>de.mwe.dev</groupId>
+        <artifactId>blogpad-build</artifactId>
+        <relativePath>../blogpad-build/pom.xml</relativePath>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

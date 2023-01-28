@@ -85,7 +85,7 @@ public class PostStoreTest {
     @Test
     @Order(3)
     public void readPostTest() throws IOException{
-        Post postAct = cut.read(contentRoot + postRef.getTitle());
+        Post postAct = cut.read(postRef.getTitle());
         postAct.setModifiedAt(postRef.getModifiedAt());
 
         String postActString = cut.serialize(postAct);

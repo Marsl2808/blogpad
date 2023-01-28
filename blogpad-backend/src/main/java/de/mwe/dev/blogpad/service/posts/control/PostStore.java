@@ -6,8 +6,11 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.MetricRegistry.Type;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.annotation.PostConstruct;
@@ -23,6 +26,10 @@ public class PostStore {
     @Inject
     @ConfigProperty(name = "content.root")
     private String contentRoot;
+
+    // @Inject
+    // @RegistryType(type=Type.APPLICATION)
+    // MetricRegistry registry;
 
     Path storageDirectoryPath;
 
@@ -55,9 +62,18 @@ public class PostStore {
         return post;
     }
 
-    public boolean fileExists(String filename){
-        Path fqn = this.storageDirectoryPath.resolve(filename);
-        return Files.exists(fqn);
+    public Post read(String filename){
+        String normalizedFilename = this.normalizer.normalizeFilename(filename);
+        if(!fileExists(normalizedFilename)){
+            increaseNotExistingPostCounter();
+            return null;
+        }
+        String stringifiedPost = readFromFs(normalizedFilename);
+        return deserialize(stringifiedPost);
+    }
+
+    private void increaseNotExistingPostCounter() {
+//        this.registry.counter("fetch_post_with_ne_title").inc();
     }
 
     public void update(Post post, String filename){
@@ -69,6 +85,11 @@ public class PostStore {
         String jsonPost = serialize(post);
         post.setFullQualifiedFilename(normalizedFilename);
         writeToFs(normalizedFilename, jsonPost);
+    }
+
+    public boolean fileExists(String filename){
+        Path fqn = this.storageDirectoryPath.resolve(filename);
+        return Files.exists(fqn);
     }
 
     public void writeToFs(String filename, String content) {
@@ -83,11 +104,6 @@ public class PostStore {
     public String serialize(Post post){
         Jsonb jsonb = JsonbBuilder.create();
         return jsonb.toJson(post);
-    }
-
-    public Post read(String filename){
-        String stringifiedPost = readFromFs(filename);
-        return deserialize(stringifiedPost);
     }
 
     public String readFromFs(String filename){

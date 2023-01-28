@@ -3,6 +3,7 @@ package de.mwe.dev.blogpad.service.posts.boundary;
 import java.net.URI;
 
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
