@@ -13,7 +13,7 @@
     <variable name="default.http.port" defaultValue="9080"/>
     <variable name="default.https.port" defaultValue="9443"/>
 
-    <webApplication location="blogpad.war" contextRoot="/" />
+    <webApplication location="blogpad-backend.war" contextRoot="/" />
     
     <mpMetrics authentication="false"/>
 
