@@ -1,4 +1,5 @@
 FROM open-liberty:kernel-slim-java11-openj9
+# full-java11-openj9
 
 # Add server configuration
 COPY --chown=1001:0  ./src/main/liberty/config/server.xml /config/
