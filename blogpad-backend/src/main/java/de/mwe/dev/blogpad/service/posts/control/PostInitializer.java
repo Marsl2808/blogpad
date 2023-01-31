@@ -1,5 +1,8 @@
 package de.mwe.dev.blogpad.service.posts.control;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.mwe.dev.blogpad.service.posts.entity.Post;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
@@ -11,6 +14,8 @@ public class PostInitializer {
 
     static final String initialTitle = "initialTitle";
 
+    private static final Logger LOG = LoggerFactory.getLogger(PostInitializer.class);
+
     @Inject
     PostStore store;
 
@@ -21,7 +26,7 @@ public class PostInitializer {
         }
         Post post = this.createInitialPost();
         this.store.create(post, initialTitle);
-        System.out.println("Default Post initialized on startup.");
+        LOG.info("Default Post initialized on startup.");
     }
 
     private Post createInitialPost(){

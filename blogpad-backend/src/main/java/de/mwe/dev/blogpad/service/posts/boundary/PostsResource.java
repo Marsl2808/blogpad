@@ -3,9 +3,10 @@ package de.mwe.dev.blogpad.service.posts.boundary;
 import java.net.URI;
 
 import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.mwe.dev.blogpad.service.posts.control.PostStore;
 import de.mwe.dev.blogpad.service.posts.entity.Post;
@@ -26,6 +27,8 @@ import jakarta.ws.rs.core.UriInfo;
 @Path("posts")
 public class PostsResource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PostsResource.class);
+
     @Inject
     PostStore postStore;
 
@@ -39,6 +42,7 @@ public class PostsResource {
     public Response create(@Context UriInfo uriInfo, Post post){
         Post savedPost = postStore.create(post, post.getTitle());
         URI uri = uriInfo.getAbsolutePathBuilder().path(savedPost.getFullQualifiedFilename()).build();
+        LOG.info("Post " + savedPost.getTitle() + " created");
         return Response.created(uri).build();
     }
 
@@ -51,6 +55,7 @@ public class PostsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context UriInfo uriInfo, Post post){
         postStore.update(post, post.getTitle());
+        LOG.info("Post " + post.getTitle() + " updated");
         return Response.ok().build();
     }
 
@@ -59,6 +64,14 @@ public class PostsResource {
     @Counted(absolute = true, description = "Number of times the endpoint is requested")
     @Produces(MediaType.APPLICATION_JSON)
     public Post findPost(@QueryParam("title") String title){
+        LOG.info("Post " + title + " requested");
         return postStore.read(title);
     }
+
+    @GET
+    @Path("test")
+    public String myDebug(){
+        return "Test successful";
+    }
+
 }
